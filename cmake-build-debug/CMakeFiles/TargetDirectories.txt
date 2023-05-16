@@ -1,0 +1,5 @@
+C:/Projects/GarageController/cmake-build-debug/CMakeFiles/Production.dir
+C:/Projects/GarageController/cmake-build-debug/CMakeFiles/Debug.dir
+C:/Projects/GarageController/cmake-build-debug/CMakeFiles/Z_DUMMY_TARGET.dir
+C:/Projects/GarageController/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Projects/GarageController/cmake-build-debug/CMakeFiles/rebuild_cache.dir
