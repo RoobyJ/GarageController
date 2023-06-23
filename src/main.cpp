@@ -3,10 +3,12 @@
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
 #include <Arduino.h>
+#include <IPAddress.h>
 
 //network constants
 const char *ssid = ".....";
 const char *password = ".....";
+const char *remoteIp = ".....";
 
 // thermistor constants
 const double VCC = 3.3;             // NodeMCU on board 3.3v vcc
@@ -18,6 +20,7 @@ const float A = 1.009249522e-03, B = 2.378405444e-04, C = 2.019202697e-07;
 ESP8266WebServer server(80);
 
 const int led = 13;
+bool heating = false;
 
 void handleRoot() {
     digitalWrite(led, 1);
@@ -26,19 +29,44 @@ void handleRoot() {
 }
 
 void Heater() {
-    if (server.method() != HTTP_PUT) {
+    if(String(server.client().remoteIP().toString().c_str()) != remoteIp){
+        digitalWrite(led, 1);
+        server.send(401, "text/plain", "UnAuthorized");
+        digitalWrite(led, 0);
+    } else if (server.method() != HTTP_PUT) {
         digitalWrite(led, 1);
         server.send(405, "text/plain", "Method Not Allowed");
         digitalWrite(led, 0);
     } else {
         digitalWrite(led, 1);
         server.send(200, "text/plain", "Heater: " + server.arg(0));
+
+        digitalWrite(led, 0);
+    }
+}
+
+void HeaterStatus() {
+    if(String(server.client().remoteIP().toString().c_str()) != remoteIp){
+        digitalWrite(led, 1);
+        server.send(401, "text/plain", "UnAuthorized");
+        digitalWrite(led, 0);
+    } else if (server.method() != HTTP_GET) {
+        digitalWrite(led, 1);
+        server.send(405, "text/plain", "Method Not Allowed");
+        digitalWrite(led, 0);
+    } else {
+        digitalWrite(led, 1);
+        server.send(200, "application/json", "Temperature: " + String(heating));
         digitalWrite(led, 0);
     }
 }
 
 void Temperature() {
-    if (server.method() != HTTP_GET) {
+    if(String(server.client().remoteIP().toString().c_str()) != remoteIp){
+        digitalWrite(led, 1);
+        server.send(401, "text/plain", "UnAuthorized");
+        digitalWrite(led, 0);
+    } else if (server.method() != HTTP_GET) {
         digitalWrite(led, 1);
         server.send(405, "text/plain", "Method Not Allowed");
         digitalWrite(led, 0);
@@ -106,6 +134,8 @@ void setup(void) {
     server.on("/Heater/", Heater);
 
     server.on("/Temperature/", Temperature);
+
+    server.on("/Heater-Status/", HeaterStatus);
 
     server.onNotFound(handleNotFound);
 

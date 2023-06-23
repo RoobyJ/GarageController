@@ -42,7 +42,7 @@ rule CUSTOM_COMMAND
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = C:\Users\rober\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\231.8109.222\bin\cmake\win\x64\bin\cmake.exe --regenerate-during-build -SC:\Projects\GarageController -BC:\Projects\GarageController\cmake-build-nodemcuv2
+  command = C:\Users\rober\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\231.9011.31\bin\cmake\win\x64\bin\cmake.exe --regenerate-during-build -SC:\Projects\GarageController -BC:\Projects\GarageController\cmake-build-nodemcuv2
   description = Re-running CMake...
   generator = 1
 
@@ -51,7 +51,7 @@ rule RERUN_CMAKE
 # Rule for cleaning all built files.
 
 rule CLEAN
-  command = C:\Users\rober\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\231.8109.222\bin\ninja\win\x64\ninja.exe $FILE_ARG -t clean $TARGETS
+  command = C:\Users\rober\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\231.9011.31\bin\ninja\win\x64\ninja.exe $FILE_ARG -t clean $TARGETS
   description = Cleaning all built files...
 
 
@@ -59,6 +59,6 @@ rule CLEAN
 # Rule for printing all primary targets available.
 
 rule HELP
-  command = C:\Users\rober\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\231.8109.222\bin\ninja\win\x64\ninja.exe -t targets
+  command = C:\Users\rober\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\231.9011.31\bin\ninja\win\x64\ninja.exe -t targets
   description = All primary targets available:
 
