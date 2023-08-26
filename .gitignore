@@ -1,0 +1,9 @@
+.pio
+.idea
+cmake-build-nodemcuv2
+cmake-build-debug
+include
+lib
+CMakeLists.txt
+CMakeListsPrivate.txt
+platformio.ini
