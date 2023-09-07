@@ -54,45 +54,7 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "192.168.1.18/Temperature/"
-			},
-			"response": []
-		},
-		{
-			"name": "HeaterStatus",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Response status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response has the required field 'Heating'\", function () {\r",
-							"    pm.expect(pm.response.json()).to.be.an('object').that.has.property('Heating');\r",
-							"});\r",
-							"\r",
-							"pm.test(\"The 'Heating' field should be either 'On' or 'Off'\", function () {\r",
-							"    pm.expect(pm.response.json().Heating).to.be.oneOf(['On', 'Off']);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response time is less than 1000ms\", function () {\r",
-							"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response body is a valid JSON format\", function () {\r",
-							"    pm.response.to.be.json;\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": "192.168.1.18/Heater-Status/"
+				"url": "192.168.1.18/temperature/"
 			},
 			"response": []
 		},
@@ -128,7 +90,45 @@
 						}
 					]
 				},
-				"url": "192.168.1.18/Heater/"
+				"url": "192.168.1.18/heater/"
+			},
+			"response": []
+		},
+		{
+			"name": "Heater status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Validate the HeatingStatus field\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.HeatingStatus).to.exist.and.to.be.a('boolean');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is less than 500ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "192.168.1.18/heater-status/"
 			},
 			"response": []
 		}
