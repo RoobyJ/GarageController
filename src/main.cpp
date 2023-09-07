@@ -3,6 +3,7 @@
 #include <ESP8266mDNS.h>
 #include <Arduino.h>
 #include <IPAddress.h>
+#include <String>
 
 //network constants
 const char *ssid = "*****";
@@ -15,16 +16,11 @@ const double R2 = 2005;            // 2k ohm series resistor
 const double adc_resolution = 1023; // 10-bit adc
 const float A = 1.009249522e-03, B = 2.378405444e-04, C = 2.019202697e-07;
 
-enum Status {
-    On, Off
-};
-
-
 ESP8266WebServer server(80);
 
 const short HeaterPin = 0;
 const short led = 13;
-Status heatingStatus = Off;
+bool heatingStatus = false;
 
 double measureTemperature();
 
@@ -47,10 +43,10 @@ void Heater() {
         digitalWrite(led, 1);
         server.send(204);
         if (server.arg(0) == "On") {
-            heatingStatus = On;
+            heatingStatus = true;
             digitalWrite(HeaterPin, 1);
         } else if (server.arg(0) == "Off") {
-            heatingStatus = Off;
+            heatingStatus = false;
             digitalWrite(HeaterPin, 0);
         } else {
             digitalWrite(led, 1);
@@ -71,10 +67,12 @@ void HeaterStatus() {
         digitalWrite(led, 0);
     } else {
         digitalWrite(led, 1);
-        String heatStatusText = "";
-        if (heatingStatus == On) heatStatusText = "On";
-        if (heatingStatus == Off) heatStatusText = "Off";
-        server.send(200, "application/json", R"({"Heating": ")" + heatStatusText + "\"" + "}");
+        if (heatingStatus) {
+            server.send(200, "application/json", "{\"HeatingStatus\":  true }");
+        } else {
+            server.send(200, "application/json", "{\"HeatingStatus\":  false }");
+        }
+
         digitalWrite(led, 0);
     }
 }
@@ -154,11 +152,11 @@ void setup(void) {
 
     server.on("/", handleRoot);
 
-    server.on("/Heater/", Heater);
+    server.on("/heater/", Heater);
 
-    server.on("/Temperature/", Temperature);
+    server.on("/temperature/", Temperature);
 
-    server.on("/Heater-Status/", HeaterStatus);
+    server.on("/heater-status/", HeaterStatus);
 
     server.onNotFound(handleNotFound);
 
