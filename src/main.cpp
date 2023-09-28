@@ -3,12 +3,10 @@
 #include <ESP8266mDNS.h>
 #include <Arduino.h>
 #include <IPAddress.h>
-#include <String>
 
 //network constants
 const char *ssid = "*****";
 const char *password = "*****";
-const char *remoteIp = "*****";
 
 // thermistor constants
 const double VCC = 3.3;             // NodeMCU on board 3.3v vcc
@@ -18,79 +16,67 @@ const float A = 1.009249522e-03, B = 2.378405444e-04, C = 2.019202697e-07;
 
 ESP8266WebServer server(80);
 
-const short HeaterPin = 0;
-const short led = 13;
+#define HeaterPin D1
 bool heatingStatus = false;
 
 double measureTemperature();
 
 void handleRoot() {
-    digitalWrite(led, 1);
+    digitalWrite(LED_BUILTIN, LOW);
     server.send(200, "text/plain", "hello from GarageController nr1!");
-    digitalWrite(led, 0);
+    digitalWrite(LED_BUILTIN, HIGH);
 }
 
 void Heater() {
-    if (String(server.client().remoteIP().toString().c_str()) != remoteIp) {
-        digitalWrite(led, 1);
-        server.send(401, "text/plain", "UnAuthorized");
-        digitalWrite(led, 0);
-    } else if (server.method() != HTTP_PATCH) {
-        digitalWrite(led, 1);
+    if (server.method() != HTTP_PATCH) {
+        digitalWrite(LED_BUILTIN, HIGH);
         server.send(405, "text/plain", "Method Not Allowed");
-        digitalWrite(led, 0);
+        digitalWrite(LED_BUILTIN, LOW);
     } else {
-        digitalWrite(led, 1);
-        server.send(204);
-        if (server.arg(0) == "On") {
+        digitalWrite(LED_BUILTIN, HIGH);
+        if (server.arg(0) == "ON") {
             heatingStatus = true;
-            digitalWrite(HeaterPin, 1);
-        } else if (server.arg(0) == "Off") {
+            digitalWrite(HeaterPin, LOW);
+        } else if (server.arg(0) == "OFF") {
             heatingStatus = false;
-            digitalWrite(HeaterPin, 0);
+            digitalWrite(HeaterPin, HIGH);
         } else {
-            digitalWrite(led, 1);
+            digitalWrite(LED_BUILTIN, HIGH);
             server.send(404, "text/plain", "Wrong parameters");
-            digitalWrite(led, 0);
+            digitalWrite(LED_BUILTIN, LOW);
         }
+        server.send(204);
+        digitalWrite(LED_BUILTIN, LOW);
     }
 }
 
 void HeaterStatus() {
-    if (String(server.client().remoteIP().toString().c_str()) != remoteIp) {
-        digitalWrite(led, 1);
-        server.send(401, "text/plain", "UnAuthorized");
-        digitalWrite(led, 0);
-    } else if (server.method() != HTTP_GET) {
-        digitalWrite(led, 1);
+    if (server.method() != HTTP_GET) {
+        digitalWrite(LED_BUILTIN, LOW);
         server.send(405, "text/plain", "Method Not Allowed");
-        digitalWrite(led, 0);
+        digitalWrite(LED_BUILTIN, HIGH);
     } else {
-        digitalWrite(led, 1);
+        digitalWrite(LED_BUILTIN, LOW);
         if (heatingStatus) {
             server.send(200, "application/json", "{\"HeatingStatus\":  true }");
         } else {
             server.send(200, "application/json", "{\"HeatingStatus\":  false }");
         }
 
-        digitalWrite(led, 0);
+        digitalWrite(LED_BUILTIN, HIGH);
     }
 }
 
 void Temperature() {
-    if (String(server.client().remoteIP().toString().c_str()) != remoteIp) {
-        digitalWrite(led, 1);
-        server.send(401, "text/plain", "UnAuthorized");
-        digitalWrite(led, 0);
-    } else if (server.method() != HTTP_GET) {
-        digitalWrite(led, 1);
+    if (server.method() != HTTP_GET) {
+        digitalWrite(LED_BUILTIN, LOW);
         server.send(405, "text/plain", "Method Not Allowed");
-        digitalWrite(led, 0);
+        digitalWrite(LED_BUILTIN, HIGH);
     } else {
-        digitalWrite(led, 1);
+        digitalWrite(LED_BUILTIN, LOW);
         double temperature = measureTemperature();
         server.send(200, "application/json", "{\"Temperature\": " + String(temperature) + "}");
-        digitalWrite(led, 0);
+        digitalWrite(LED_BUILTIN, HIGH);
     }
 }
 
@@ -111,7 +97,7 @@ double measureTemperature() {
 }
 
 void handleNotFound() {
-    digitalWrite(led, 1);
+    digitalWrite(LED_BUILTIN, LOW);
     String message = "File Not Found\n\n";
     message += "URI: ";
     message += server.uri();
@@ -124,12 +110,12 @@ void handleNotFound() {
         message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
     }
     server.send(404, "text/plain", message);
-    digitalWrite(led, 0);
+    digitalWrite(LED_BUILTIN, HIGH);
 }
 
 void setup(void) {
-    pinMode(led, OUTPUT);
-    digitalWrite(led, 0);
+    pinMode(HeaterPin, OUTPUT);
+    digitalWrite(LED_BUILTIN, HIGH);
     Serial.begin(115200);
     WiFi.mode(WIFI_STA);
     WiFi.begin(ssid, password);

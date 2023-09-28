@@ -1,5 +1,0 @@
-C:/Projects/GarageController/cmake-build-nodemcuv2/CMakeFiles/Production.dir
-C:/Projects/GarageController/cmake-build-nodemcuv2/CMakeFiles/Debug.dir
-C:/Projects/GarageController/cmake-build-nodemcuv2/CMakeFiles/Z_DUMMY_TARGET.dir
-C:/Projects/GarageController/cmake-build-nodemcuv2/CMakeFiles/edit_cache.dir
-C:/Projects/GarageController/cmake-build-nodemcuv2/CMakeFiles/rebuild_cache.dir
